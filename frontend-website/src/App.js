@@ -4,6 +4,7 @@ import axios from 'axios'
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [usersGender, setUsersGender] = useState([]);
   const [gender, setGender] = useState("")
   const [isSort, setSort] = useState({
     title: "",
@@ -21,8 +22,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-    var results = users.filter(user =>  user.gender === gender ? user : '')
-    setUsers(results)
+    var results = users.filter(user => user.gender === gender ? user : '')
+    setUsersGender(results)
   }, [gender])
 
   console.log(isSort);
@@ -47,16 +48,16 @@ function App() {
                 console.log(e.target.abbr)
                 console.log(isSort.count)
                 console.log(isSort.title)
-                console.log(isSort.title !== title || isSort.count >=2)
-                setSort( (isSort.title !== title || isSort.count >=2) ? {title: title, count: 0} : {title: title, count: isSort.count+1})
+                console.log(isSort.title !== title || isSort.count >= 2)
+                setSort((isSort.title !== title || isSort.count >= 2) ? { title: title, count: 0 } : { title: title, count: isSort.count + 1 })
               }}>Title</th>
               <th abbr='FullName' onClick={e => {
                 let title = e.target.abbr
                 console.log(e.target.abbr)
                 console.log(isSort.count)
                 console.log(isSort.title)
-                console.log(isSort.title !== title || isSort.count >=2)
-                setSort( (isSort.title !== title || isSort.count >=2) ? {title: title, count: 0} : {title: title, count: isSort.count+1})
+                console.log(isSort.title !== title || isSort.count >= 2)
+                setSort((isSort.title !== title || isSort.count >= 2) ? { title: title, count: 0 } : { title: title, count: isSort.count + 1 })
               }}>Full Name</th>
               <th abbr='Email'>Email</th>
               <th abbr=''>Cell</th>
@@ -76,68 +77,90 @@ function App() {
           <tbody>
             {
               !isSort.count ? (
-                users.map((user, index) =>
-                  <tr key={index}>
-                    <td > {user.name.title} </td>
-                    <td> {user.name.first} {user.name.last} </td>
-                    <td> {user.email} </td>
-                    <td> {user.cell} </td>
-                    <td> {user.gender} </td>
-                    <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-                    <td> {user.dob.date.slice(0, 4)} </td>
-                    <td> {user.login.username} </td>
-                    <td> {user.location.postcode} </td>
-                    <td> {user.location.country} </td>
-                    <td> {user.location.state} </td>
-                    <td> {user.location.city} </td>
-                    <td> {user.location.street.number} {user.location.street.name} </td>
-                    <td> {user.location.timezone.offset} </td>
-                    <td> {user.nat} </td>
-                  </tr>
-                )
+                (gender === "all" || gender === "") ? (
+                  users.map((user, index) =>
+                    <tr key={index}>
+                      <td > {user.name.title} </td>
+                      <td> {user.name.first} {user.name.last} </td>
+                      <td> {user.email} </td>
+                      <td> {user.cell} </td>
+                      <td> {user.gender} </td>
+                      <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
+                      <td> {user.dob.date.slice(0, 4)} </td>
+                      <td> {user.login.username} </td>
+                      <td> {user.location.postcode} </td>
+                      <td> {user.location.country} </td>
+                      <td> {user.location.state} </td>
+                      <td> {user.location.city} </td>
+                      <td> {user.location.street.number} {user.location.street.name} </td>
+                      <td> {user.location.timezone.offset} </td>
+                      <td> {user.nat} </td>
+                    </tr>
+                  )
+                ) : (
+                  usersGender.map((user, index) =>
+                    <tr key={index}>
+                      <td > {user.name.title} </td>
+                      <td> {user.name.first} {user.name.last} </td>
+                      <td> {user.email} </td>
+                      <td> {user.cell} </td>
+                      <td> {user.gender} </td>
+                      <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
+                      <td> {user.dob.date.slice(0, 4)} </td>
+                      <td> {user.login.username} </td>
+                      <td> {user.location.postcode} </td>
+                      <td> {user.location.country} </td>
+                      <td> {user.location.state} </td>
+                      <td> {user.location.city} </td>
+                      <td> {user.location.street.number} {user.location.street.name} </td>
+                      <td> {user.location.timezone.offset} </td>
+                      <td> {user.nat} </td>
+                    </tr>
+                  )
+                )                
               ) : isSort.count === 1 ? (
-                users.map((user, index) => 
-                <tr key={index}>
-                  <td> {user.name.title} </td>
-                  <td> {user.name.first} {user.name.last} </td>
-                  <td> {user.email} </td>
-                  <td> {user.cell} </td>
-                  <td> {user.gender} </td>
-                  <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-                  <td> {user.dob.date.slice(0, 4)} </td>
-                  <td> {user.login.username} </td>
-                  <td> {user.location.postcode} </td>
-                  <td> {user.location.country} </td>
-                  <td> {user.location.state} </td>
-                  <td> {user.location.city} </td>
-                  <td> {user.location.street.number} {user.location.street.name} </td>
-                  <td> {user.location.timezone.offset} </td>
-                  <td> {user.nat} </td>               
-                </tr>
-              ).reverse()
-              ) : isSort.count === 2 ? (
                 users.map((user, index) =>
-                  <tr key={index}>
-                    <td > {user.name.title} </td>
-                    <td> {user.name.first} {user.name.last} </td>
-                    <td>  </td>
-                    <td> {user.cell} </td>
-                    <td> {user.gender} </td>
-                    <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-                    <td> {user.dob.date.slice(0, 4)} </td>
-                    <td> {user.login.username} </td>
-                    <td> {user.location.postcode} </td>
-                    <td> {user.location.country} </td>
-                    <td> {user.location.state} </td>
-                    <td> {user.location.city} </td>
-                    <td> {user.location.street.number} {user.location.street.name} </td>
-                    <td> {user.location.timezone.offset} </td>
-                    <td> {user.nat} </td>
-                  </tr>
-                )
-              ) : (
-                ""
-              )
+            <tr key={index}>
+              <td> {user.name.title} </td>
+              <td> {user.name.first} {user.name.last} </td>
+              <td> {user.email} </td>
+              <td> {user.cell} </td>
+              <td> {user.gender} </td>
+              <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
+              <td> {user.dob.date.slice(0, 4)} </td>
+              <td> {user.login.username} </td>
+              <td> {user.location.postcode} </td>
+              <td> {user.location.country} </td>
+              <td> {user.location.state} </td>
+              <td> {user.location.city} </td>
+              <td> {user.location.street.number} {user.location.street.name} </td>
+              <td> {user.location.timezone.offset} </td>
+              <td> {user.nat} </td>
+            </tr>
+            ).reverse()
+            ) : isSort.count === 2 ? (
+                users.map((user, index) =>
+            <tr key={index}>
+              <td > {user.name.title} </td>
+              <td> {user.name.first} {user.name.last} </td>
+              <td>  </td>
+              <td> {user.cell} </td>
+              <td> {user.gender} </td>
+              <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
+              <td> {user.dob.date.slice(0, 4)} </td>
+              <td> {user.login.username} </td>
+              <td> {user.location.postcode} </td>
+              <td> {user.location.country} </td>
+              <td> {user.location.state} </td>
+              <td> {user.location.city} </td>
+              <td> {user.location.street.number} {user.location.street.name} </td>
+              <td> {user.location.timezone.offset} </td>
+              <td> {user.nat} </td>
+            </tr>
+            )
+            ) : (
+            ""
+            )
             }
           </tbody>
         </table>
