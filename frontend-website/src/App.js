@@ -13,7 +13,6 @@ function App(props) {
   const [gender, setGender] = useState("")
   const [modalShow, setModalShow] = useState(false);
   const [position, setPosition] = useState(0);
-  // console.log(props)
 
   const [loadMore, setLoadMore] = useState(true);
 
@@ -24,39 +23,31 @@ function App(props) {
           const data = response.data.results;
           setUsers([...users, ...data])
           setUsersSort([...usersSort, ...data])
-          console.log("DATA: ", data)
           setLoadMore(false)
         })
         .catch(error => {
           console.log(error);
         })
     }
-  }, [loadMore])
+  }, [loadMore, usersSort, users])
 
   useEffect(() => {
     const table = document.getElementById('table-users')
-    console.log(props.scrollable)
     if (props.scrollable) {
       table.addEventListener('scroll', (e) => {
         const el = e.target;
-        if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+        if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
           setLoadMore(true);
         }
       });
     } else {
-      console.log("scrollY: " + window.scrollY)
-      console.log("innerHeight: " + window.innerHeight)
-      console.log("client Height: " + table.clientHeight)
-      console.log("offset top: " + table.offsetTop)
-
       window.addEventListener('scroll', () => {
-        // 91 is margin + header + footer
-        if (window.scrollY + window.innerHeight === table.clientHeight + table.offsetTop + 91) {
+        if (window.scrollY + window.innerHeight >= table.clientHeight + table.offsetTop) {
           setLoadMore(true);
-        } 
+        }
       });
     }
-  }, []); 
+  }, [props.scrollable]);
 
   useEffect(() => {
     const table = document.getElementById('table-users');
@@ -65,15 +56,13 @@ function App(props) {
       setLoadMore(true);
     }
   }, [users]);
-
   const handleSort = (e) => {
-    if (header === e.target.abbr) {
+    if (header === e.target.title) {
       count++;
     } else {
       count = 1
-      header = e.target.abbr
+      header = e.target.title
     }
-    // console.log("condition: " + count % 3)
     switch (count % 3) {
       case 0:
         var results = users.slice();
@@ -135,7 +124,6 @@ function App(props) {
   return (
     <div className="grid-container">
       <header>
-
       </header>
       <main>
         <div className='filter-bar'>
@@ -149,24 +137,24 @@ function App(props) {
           </div>
           <a className='btn-primary btn mx-2' href={"https://randomuser.me/api/?format=csv"} >Download CVS</a>
         </div>
-        <table id={"table-users"}> 
+        <table id={"table-users"}>
           <thead>
             <tr>
-              <th abbr='name.title' onClick={handleSort} >Title</th>
-              <th abbr='name.first' onClick={handleSort} >Full Name</th>
-              <th abbr='email' onClick={handleSort} >Email</th>
-              <th abbr='cell'>Cell</th>
-              <th abbr='gender' onClick={handleSort} >Gender</th>
-              <th abbr='picture.large'>Avatar URL</th>
-              <th abbr='dob.date' onClick={handleSort} >Birthyear</th>
-              <th abbr='login.username' onClick={handleSort} >Username</th>
-              <th abbr='location.postcode' onClick={handleSort} >Postcode</th>
-              <th abbr='location.country' onClick={handleSort} >Country</th>
-              <th abbr='location.state' onClick={handleSort} >State</th>
-              <th abbr='location.city' onClick={handleSort} >City</th>
-              <th abbr='location.street'>Street</th>
-              <th abbr='location.timezone'>Timezone</th>
-              <th abbr='nat' onClick={handleSort}>Nationality</th>
+              <th title='name.title' onClick={handleSort} >Title</th>
+              <th title='name.first' onClick={handleSort} >Full Name</th>
+              <th title='email' onClick={handleSort} >Email</th>
+              <th title='cell' className='none-click'>Cell</th>
+              <th title='gender' onClick={handleSort} >Gender</th>
+              <th title='picture.large' className='none-click'>Avatar URL</th>
+              <th title='dob.date' onClick={handleSort} >Birthyear</th>
+              <th title='login.username' onClick={handleSort} >Username</th>
+              <th title='location.postcode' onClick={handleSort} >Postcode</th>
+              <th title='location.country' onClick={handleSort} >Country</th>
+              <th title='location.state' onClick={handleSort} >State</th>
+              <th title='location.city' onClick={handleSort} >City</th>
+              <th title='location.street' className='none-click'>Street</th>
+              <th title='location.timezone' className='none-click'>Timezone</th>
+              <th title='nat' onClick={handleSort}>Nationality</th>
             </tr>
           </thead>
           <tbody>
@@ -195,16 +183,13 @@ function App(props) {
                 )
               )
             }
-
           </tbody>
         </table>
 
         {/* Modal */}
         <UserProfile user={users[position]} show={modalShow} onHide={() => setModalShow(false)}></UserProfile>
-
       </main>
       <footer>
-
       </footer>
     </div>
   );

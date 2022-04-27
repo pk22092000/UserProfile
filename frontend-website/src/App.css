@@ -1,6 +1,7 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 :root {
   --primary-color: #91c2cc;
+  --primary-bold-color: #3e92a3;
   --header-height: 30px;
   --footer-height: 30px; 
 }
@@ -69,6 +70,11 @@ th {
   background-color: #f5f5f5;
 }
 
+th:hover {
+  cursor: pointer;
+  background-color: #ededed;
+}
+
 td {
   text-align: left;
 }
@@ -85,6 +91,18 @@ tr > * {
   padding: 8px;
   margin: 4px 0;
 }
+
+.none-click:hover {
+  cursor: default;
+  background-color: #f5f5f5;
+}
+
+.full-name:hover {
+  cursor: pointer;
+  background-color: #f1f1f1;
+}
+
+
 /* Boostrap */
 @media (min-width: 576px) {
   .modal-dialog {
@@ -95,6 +113,11 @@ tr > * {
 
 .btn {
   background-color: var(--primary-color)!important;
+  border-color: var(--primary-color)!important;
+}
+
+.btn:hover {
+  background-color: var(--primary-bold-color)!important;
   border-color: var(--primary-color)!important;
 }
 

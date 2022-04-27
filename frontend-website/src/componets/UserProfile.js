@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Col, Container, Modal, Row} from 'react-bootstrap'
+import { Button, Col, Container, Modal, Row } from 'react-bootstrap'
 
 export default function UserProfile(props) {
   const { user } = props;
@@ -14,11 +14,11 @@ export default function UserProfile(props) {
         <Modal.Body className="show-grid">
           <Container>
             <Row>
-              <Col xs={6} md={6} className="align-items-center" >
+              <Col xs={12} sm={6} md={6} className="align-items-center" >
                 <img alt='avt' src={user.picture.large} width="250px"></img>
                 <h5 className="mt-1"> {user.name.title}. {user.name.first} {user.name.last} </h5>
               </Col>
-              <Col xs={6} md={6}>
+              <Col xs={12} sm={6} md={6}>
                 <div className='fw-bold' >Day of Birth: </div>
                 <div> {user.dob.date.split("T")[0]} </div>
                 <div className='fw-bold' >Phone: </div>
@@ -31,7 +31,6 @@ export default function UserProfile(props) {
                 <div className='text-capitalize'> {user.gender} </div>
                 <div className='fw-bold' >Nationality: </div>
                 <div className='text-uppercase'> {user.nat} </div>
-
               </Col>
             </Row>
           </Container>

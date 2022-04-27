@@ -6,7 +6,7 @@ export default function UsersList(props) {
       <tr>
         <td className='text-capitalize'> {user.name.title} </td>
         <td
-          className='text-capitalize' 
+          className='text-capitalize full-name'
           onClick={(e) => {
             setPosition(position)
             setModalShow(true)
