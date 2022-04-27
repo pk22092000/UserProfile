@@ -44,6 +44,7 @@ main {
   max-width: 100%;
   padding: 1rem;
   background-color: #f7f7f7;
+  position: relative;
 }
 
 footer {
