@@ -29,6 +29,8 @@ export default function UserProfile(props) {
                 <div className='text-capitalize'> {user.location.street.number} {user.location.street.name} , {user.location.city} , {user.location.state} , {user.location.country} </div>
                 <div className='fw-bold' >Gender: </div>
                 <div className='text-capitalize'> {user.gender} </div>
+                <div className='fw-bold' >Nationality: </div>
+                <div className='text-uppercase'> {user.nat} </div>
 
               </Col>
             </Row>

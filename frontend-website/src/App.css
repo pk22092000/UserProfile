@@ -64,22 +64,41 @@ th, td {
   padding: 8px;
 }
 
-td {
-  text-align: left;
-}
-
 th {
   text-align: center;
+  background-color: #f5f5f5;
+}
+
+td {
+  text-align: left;
 }
 
 tr > * {
   white-space: nowrap;
 }
 
+.filter-bar {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  background-color: #ededed;
+  padding: 8px;
+  margin: 4px 0;
+}
 /* Boostrap */
 @media (min-width: 576px) {
   .modal-dialog {
       max-width: 800px!important;
       margin: 1.75rem auto;
   }
+}
+
+.btn {
+  background-color: var(--primary-color)!important;
+  border-color: var(--primary-color)!important;
+}
+
+.btn:focus {
+  border-color: var(--primary-color)!important;
+  box-shadow: none!important;
 }
