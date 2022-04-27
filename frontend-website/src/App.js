@@ -1,35 +1,96 @@
 import React, { useEffect, useState } from 'react'
-import './App.css';
 import axios from 'axios'
+import './App.css';
+import UsersList from './components/UsersList'
+import {BrowserRouter as Link} from 'react-router-dom'
 
+  
+var count = 0;
+var header = "";
 function App() {
   const [users, setUsers] = useState([]);
-  const [usersGender, setUsersGender] = useState([]);
+  const [usersSort, setUsersSort] = useState([])
   const [gender, setGender] = useState("")
-  const [isSort, setSort] = useState({
-    title: "",
-    count: 0
-  });
+
   useEffect(() => {
     axios.get("https://randomuser.me/api?results=10")
-      .then(response => {
-        const data = response.data.results;
-        setUsers(data)
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    .then(response => {
+      const data = response.data.results;
+      setUsers(data)
+      setUsersSort(data)
+    })
+    .catch(error => {
+      console.log(error);
+    })
   }, [])
 
-  useEffect(() => {
-    var results = users.filter(user => user.gender === gender ? user : '')
-    setUsersGender(results)
-  }, [gender])
-
-  console.log(isSort);
-  console.log(gender)
-  console.log(users)
-
+  const handleSort = (e) => {
+    if(header === e.target.abbr) {
+      count++;
+    } else {
+      count = 1
+      header = e.target.abbr
+    } 
+    console.log("condition: " + count%3)
+    switch (count%3) {
+      case 0:
+        var results = users.slice();
+        setUsersSort(results)
+        break;
+      case 1:
+        results = users.slice()
+        results.sort( (prev, next) => {
+          var header1 = header.slice(0, header.indexOf("."));
+          var header2 = header.slice(header.indexOf(".") + 1, header.length);
+          var userPrev;
+          var userNext;
+          if(header.indexOf(".") === -1) {
+            userPrev = prev[header];
+            userNext = next[header];
+          }else{
+            userPrev = prev[header1][header2];
+            userNext = next[header1][header2];
+          }
+          console.log((userPrev))
+          if (userPrev < userNext) {
+            return -1;
+          }
+          if (userPrev > userNext) {
+            return 1;
+          }
+          return 0;
+        });
+        setUsersSort(results)
+        break;
+      case 2:
+        results = users.slice()
+        results.sort( (prev, next) => {
+          var header1 = header.slice(0, header.indexOf("."));
+          var header2 = header.slice(header.indexOf(".") + 1, header.length);
+          var userPrev;
+          var userNext;
+          if(header.indexOf(".") === -1) {
+            userPrev = prev[header];
+            userNext = next[header];
+          }else{
+            userPrev = prev[header1][header2];
+            userNext = next[header1][header2];
+          }
+          console.log((userPrev))
+          if (userPrev < userNext) {
+            return -1;
+          }
+          if (userPrev > userNext) {
+            return 1;
+          }
+          return 0;
+        }).reverse();
+        setUsersSort(results)
+        break;
+      default:
+        break;
+    }
+  }
   return (
     <div className="grid-container">
       <header>
@@ -38,131 +99,33 @@ function App() {
           <option value={"male"}>Male</option>
           <option value={"female"}>Female</option>
         </select>
+        <Link to={"/"} >Download CVS</Link>
       </header>
       <main>
         <table>
           <thead>
             <tr>
-              <th abbr='title' onClick={e => {
-                let title = e.target.abbr
-                console.log(e.target.abbr)
-                console.log(isSort.count)
-                console.log(isSort.title)
-                console.log(isSort.title !== title || isSort.count >= 2)
-                setSort((isSort.title !== title || isSort.count >= 2) ? { title: title, count: 0 } : { title: title, count: isSort.count + 1 })
-              }}>Title</th>
-              <th abbr='FullName' onClick={e => {
-                let title = e.target.abbr
-                console.log(e.target.abbr)
-                console.log(isSort.count)
-                console.log(isSort.title)
-                console.log(isSort.title !== title || isSort.count >= 2)
-                setSort((isSort.title !== title || isSort.count >= 2) ? { title: title, count: 0 } : { title: title, count: isSort.count + 1 })
-              }}>Full Name</th>
-              <th abbr='Email'>Email</th>
-              <th abbr=''>Cell</th>
-              <th abbr=''>Gender</th>
-              <th abbr=''>Avatar URL</th>
-              <th abbr=''>Birthyear</th>
-              <th abbr=''>Username</th>
-              <th abbr=''>Postcode</th>
-              <th abbr=''>Country</th>
-              <th abbr=''>State</th>
-              <th abbr=''>City</th>
-              <th abbr=''>Street</th>
-              <th abbr=''>Timezone</th>
-              <th abbr=''>Nationality</th>
+              <th abbr='name.title' onClick={handleSort} >Title</th>
+              <th abbr='name.first' onClick={handleSort} >Full Name</th>
+              <th abbr='email' onClick={handleSort} >Email</th>
+              <th abbr='cell'>Cell</th>
+              <th abbr='gender' onClick={handleSort} >Gender</th>
+              <th abbr='picture.large'>Avatar URL</th>
+              <th abbr='dob.date' onClick={handleSort} >Birthyear</th>
+              <th abbr='login.username' onClick={handleSort} >Username</th>
+              <th abbr='location.postcode' onClick={handleSort} >Postcode</th>
+              <th abbr='location.country' onClick={handleSort} >Country</th>
+              <th abbr='location.state' onClick={handleSort} >State</th>
+              <th abbr='location.city' onClick={handleSort} >City</th>
+              <th abbr='location.street'>Street</th>
+              <th abbr='location.timezone'>Timezone</th>
+              <th abbr='nat' onClick={handleSort}>Nationality</th>
             </tr>
           </thead>
-          <tbody>
-            {
-              !isSort.count ? (
-                (gender === "all" || gender === "") ? (
-                  users.map((user, index) =>
-                    <tr key={index}>
-                      <td > {user.name.title} </td>
-                      <td> {user.name.first} {user.name.last} </td>
-                      <td> {user.email} </td>
-                      <td> {user.cell} </td>
-                      <td> {user.gender} </td>
-                      <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-                      <td> {user.dob.date.slice(0, 4)} </td>
-                      <td> {user.login.username} </td>
-                      <td> {user.location.postcode} </td>
-                      <td> {user.location.country} </td>
-                      <td> {user.location.state} </td>
-                      <td> {user.location.city} </td>
-                      <td> {user.location.street.number} {user.location.street.name} </td>
-                      <td> {user.location.timezone.offset} </td>
-                      <td> {user.nat} </td>
-                    </tr>
-                  )
-                ) : (
-                  usersGender.map((user, index) =>
-                    <tr key={index}>
-                      <td > {user.name.title} </td>
-                      <td> {user.name.first} {user.name.last} </td>
-                      <td> {user.email} </td>
-                      <td> {user.cell} </td>
-                      <td> {user.gender} </td>
-                      <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-                      <td> {user.dob.date.slice(0, 4)} </td>
-                      <td> {user.login.username} </td>
-                      <td> {user.location.postcode} </td>
-                      <td> {user.location.country} </td>
-                      <td> {user.location.state} </td>
-                      <td> {user.location.city} </td>
-                      <td> {user.location.street.number} {user.location.street.name} </td>
-                      <td> {user.location.timezone.offset} </td>
-                      <td> {user.nat} </td>
-                    </tr>
-                  )
-                )                
-              ) : isSort.count === 1 ? (
-                users.map((user, index) =>
-            <tr key={index}>
-              <td> {user.name.title} </td>
-              <td> {user.name.first} {user.name.last} </td>
-              <td> {user.email} </td>
-              <td> {user.cell} </td>
-              <td> {user.gender} </td>
-              <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-              <td> {user.dob.date.slice(0, 4)} </td>
-              <td> {user.login.username} </td>
-              <td> {user.location.postcode} </td>
-              <td> {user.location.country} </td>
-              <td> {user.location.state} </td>
-              <td> {user.location.city} </td>
-              <td> {user.location.street.number} {user.location.street.name} </td>
-              <td> {user.location.timezone.offset} </td>
-              <td> {user.nat} </td>
-            </tr>
-            ).reverse()
-            ) : isSort.count === 2 ? (
-                users.map((user, index) =>
-            <tr key={index}>
-              <td > {user.name.title} </td>
-              <td> {user.name.first} {user.name.last} </td>
-              <td>  </td>
-              <td> {user.cell} </td>
-              <td> {user.gender} </td>
-              <td> <a href={user.picture.large}> {user.picture.large} </a> </td>
-              <td> {user.dob.date.slice(0, 4)} </td>
-              <td> {user.login.username} </td>
-              <td> {user.location.postcode} </td>
-              <td> {user.location.country} </td>
-              <td> {user.location.state} </td>
-              <td> {user.location.city} </td>
-              <td> {user.location.street.number} {user.location.street.name} </td>
-              <td> {user.location.timezone.offset} </td>
-              <td> {user.nat} </td>
-            </tr>
-            )
-            ) : (
-            ""
-            )
-            }
-          </tbody>
+              <UsersList 
+                users={usersSort} 
+                gender={gender}
+              />
         </table>
       </main>
       <footer>
