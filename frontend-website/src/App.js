@@ -2,56 +2,56 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css';
 import UsersList from './componets/UsersList'
-import {BrowserRouter as Link} from 'react-router-dom'
-import {Button, Col, Container, Modal, Row} from 'react-bootstrap'
+import { BrowserRouter as Link } from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
+import UserProfile from './componets/UserProfile';
 
-  
 var count = 0;
 var header = "";
 function App() {
   const [users, setUsers] = useState([]);
   const [usersSort, setUsersSort] = useState([])
   const [gender, setGender] = useState("")
-
   const [modalShow, setModalShow] = useState(false);
+  const [position, setPosition] = useState(0);
+
 
   useEffect(() => {
-    axios.get("https://randomuser.me/api?results=10")
-    .then(response => {
-      const data = response.data.results;
-      setUsers(data)
-      setUsersSort(data)
-    })
-    .catch(error => {
-      console.log(error);
-    })
+    axios.get("https://randomuser.me/api?results=20")
+      .then(response => {
+        const data = response.data.results;
+        setUsers(data)
+        setUsersSort(data)
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }, [])
 
   const handleSort = (e) => {
-    if(header === e.target.abbr) {
+    if (header === e.target.abbr) {
       count++;
     } else {
       count = 1
       header = e.target.abbr
-    } 
-    console.log("condition: " + count%3)
-    switch (count%3) {
+    }
+    console.log("condition: " + count % 3)
+    switch (count % 3) {
       case 0:
         var results = users.slice();
         setUsersSort(results)
         break;
       case 1:
         results = users.slice()
-        results.sort( (prev, next) => {
+        results.sort((prev, next) => {
           var header1 = header.slice(0, header.indexOf("."));
           var header2 = header.slice(header.indexOf(".") + 1, header.length);
           var userPrev;
           var userNext;
-          if(header.indexOf(".") === -1) {
+          if (header.indexOf(".") === -1) {
             userPrev = prev[header];
             userNext = next[header];
-          }else{
+          } else {
             userPrev = prev[header1][header2];
             userNext = next[header1][header2];
           }
@@ -68,15 +68,15 @@ function App() {
         break;
       case 2:
         results = users.slice()
-        results.sort( (prev, next) => {
+        results.sort((prev, next) => {
           var header1 = header.slice(0, header.indexOf("."));
           var header2 = header.slice(header.indexOf(".") + 1, header.length);
           var userPrev;
           var userNext;
-          if(header.indexOf(".") === -1) {
+          if (header.indexOf(".") === -1) {
             userPrev = prev[header];
             userNext = next[header];
-          }else{
+          } else {
             userPrev = prev[header1][header2];
             userNext = next[header1][header2];
           }
@@ -126,19 +126,37 @@ function App() {
               <th abbr='nat' onClick={handleSort}>Nationality</th>
             </tr>
           </thead>
-              <UsersList 
-                users={usersSort} 
-                gender={gender}
-              />
+          <tbody>
+            {
+              gender === "" || gender === "all" ? (
+                usersSort.map((user, index) => (
+                  <UsersList
+                    key={index}
+                    user={user}
+                    setModalShow={value => setModalShow(value)}
+                    position={index}
+                    setPosition={value => setPosition(value)}
+                  />
+                ))
+              ) : (
+                usersSort.filter(user => user.gender === gender ? user : '').map((user, index) => (
+                  <UsersList
+                    key={index}
+                    user={user}
+                    setModalShow={value => setModalShow(value)}
+                    position={index}
+                    setPosition={value => setPosition(value)}
+                  />
+                ))
+              )
+            }
+
+          </tbody>
         </table>
 
         {/* Modal */}
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          Launch modal with grid
-        </Button>
+        <UserProfile user={users[position]} show={modalShow} onHide={() => setModalShow(false)}></UserProfile>
 
-        <MydModalWithGrid show={modalShow} onHide={() => setModalShow(false)} />
-        
       </main>
       <footer>
 
@@ -149,42 +167,4 @@ function App() {
 
 export default App;
 
-function MydModalWithGrid(props) {
-  return (
-    <Modal {...props} aria-labelledby="contained-modal-title-vcenter">
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Using Grid in Modal
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className="show-grid">
-        <Container>
-          <Row>
-            <Col xs={12} md={8}>
-              .col-xs-12 .col-md-8
-            </Col>
-            <Col xs={6} md={4}>
-              .col-xs-6 .col-md-4
-            </Col>
-          </Row>
-
-          <Row>
-            <Col xs={6} md={4}>
-              .col-xs-6 .col-md-4
-            </Col>
-            <Col xs={6} md={4}>
-              .col-xs-6 .col-md-4
-            </Col>
-            <Col xs={6} md={4}>
-              .col-xs-6 .col-md-4
-            </Col>
-          </Row>
-        </Container>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer>
-    </Modal>
-  );
-}
 
